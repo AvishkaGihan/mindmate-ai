@@ -72,7 +72,7 @@ describe('Sync Endpoints', () => {
 
       // Check individual operation results
       const op1Result = response.body.results.find(
-        (r: any) => r.operationId === 'client-op-1'
+        (r: Record<string, unknown>) => r.operationId === 'client-op-1'
       );
       expect(op1Result.status).toBe('success');
     });
@@ -102,10 +102,10 @@ describe('Sync Endpoints', () => {
       expect(response.status).toBe(200); // 200 OK because the batch request was received
 
       const validResult = response.body.results.find(
-        (r: any) => r.operationId === 'valid-op'
+        (r: Record<string, unknown>) => r.operationId === 'valid-op'
       );
       const invalidResult = response.body.results.find(
-        (r: any) => r.operationId === 'invalid-op'
+        (r: Record<string, unknown>) => r.operationId === 'invalid-op'
       );
 
       expect(validResult.status).toBe('success');
