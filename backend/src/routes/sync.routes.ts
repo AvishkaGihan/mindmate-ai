@@ -19,7 +19,7 @@ const syncOperationsSchema = z.object({
             clientId: z.string().optional(),
             enqueuedAt: z.iso.datetime().optional(),
           })
-          .passthrough()
+          .loose()
       )
       .min(1, { message: 'Operations array cannot be empty' }),
   }),
