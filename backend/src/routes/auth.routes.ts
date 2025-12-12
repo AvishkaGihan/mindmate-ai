@@ -9,7 +9,7 @@ const router = Router();
 // Validation Schemas
 const signupSchema = z.object({
   body: z.object({
-    email: z.string().email(),
+    email: z.email(),
     password: z.string().min(8, 'Password must be at least 8 characters'),
     name: z.string().min(2, 'Name must be at least 2 characters'),
   }),
@@ -17,7 +17,7 @@ const signupSchema = z.object({
 
 const loginSchema = z.object({
   body: z.object({
-    email: z.string().email(),
+    email: z.email(),
     password: z.string().min(1, 'Password is required'),
   }),
 });
