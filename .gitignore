@@ -1,0 +1,64 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.env
+serviceAccountKey.json
+*.pem
+*.key
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+
+# Build & Compilation
+dist/
+build/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+# Mobile specific
+.expo/
+web-build/
+*.jks
+*.keystore
+mobile/ios/Pods/
+mobile/ios/Podfile.lock
+mobile/android/build/
+mobile/android/.gradle/
+mobile/android/local.properties
+
+# Backend specific
+backend/.env*
+backend/dist/
+backend/build/
+backend/logs/
+*.log
+
+# Test coverage
+.nyc_output/
+coverage/
+*.lcov
+
+# Misc
+.cache/
+.next/
+out/
+.venv/
+env/
+venv/
