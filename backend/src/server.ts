@@ -5,9 +5,19 @@ import { env } from "./config/env";
 const startServer = async () => {
   await connectDB();
 
-  app.listen(env.PORT, () => {
+  const server = app.listen(env.PORT, () => {
     console.log(`Server running in ${env.NODE_ENV} mode on port ${env.PORT}`);
   });
+
+  return server;
 };
 
-startServer();
+// Only start the server if this module is run directly
+if (require.main === module) {
+  startServer().catch((error) => {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  });
+}
+
+export default startServer;
