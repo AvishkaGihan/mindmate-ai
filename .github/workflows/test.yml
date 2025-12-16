@@ -1,0 +1,70 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-test:
+    name: Backend (Lint & Test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Linter
+        run: npm run lint
+        continue-on-error: false
+
+      - name: Run Tests (Unit & Integration)
+        run: npm test
+        env:
+          NODE_ENV: test
+          JWT_SECRET: test_secret
+          SERVER_ENC_KEY: 0000000000000000000000000000000000000000000000000000000000000000
+
+  mobile-test:
+    name: Mobile (Type Check & Unit Test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./mobile
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # In a real Expo project, we might run 'npx expo-doctor' or similar here
+      # For now, we rely on TypeScript compilation check
+      - name: Type Check
+        run: npm run type-check
+        continue-on-error: false
+
+      - name: Run Unit Tests
+        run: npm test

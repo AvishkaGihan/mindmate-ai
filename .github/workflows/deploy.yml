@@ -1,0 +1,21 @@
+name: Deploy Production
+
+on:
+  # Trigger deployment only after code is pushed/merged to main.
+  # Note: It is highly recommended to enable GitHub Branch Protection rules
+  # to ensure the 'Test Suite' workflow passes before code can be merged here.
+  push:
+    branches: [main]
+
+jobs:
+  deploy-backend:
+    name: Deploy to Render
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Deploy Hook
+        # Only run if the secret is available (prevents failure in forks)
+        if: ${{ secrets.RENDER_DEPLOY_HOOK_URL != '' }}
+        run: |
+          echo "Triggering Render deployment..."
+          curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+          echo "Deployment triggered successfully."

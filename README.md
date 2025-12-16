@@ -1,68 +1,127 @@
-# MindMate AI 🧠
+# MindMate AI
 
-> A privacy-first mental wellness companion powered by Generative AI.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
+![Status](https://img.shields.io/badge/status-active-success.svg)
 
-MindMate AI is a cross-platform mobile application that combines therapeutic journaling with AI-powered emotional support. Built with a "Privacy-by-Design" architecture, it features **Dual-Layer Encryption** (AES-256) ensuring that no sensitive user data—not even journal entries—is accessible to the backend server in plaintext.
+> **A privacy-first mental wellness companion app with AI-powered mood tracking, personalized journaling prompts, and daily mindfulness exercises.**
 
-![App Screenshot](https://via.placeholder.com/800x400?text=MindMate+AI+Portfolio+Demo)
+MindMate AI bridges the gap between expensive therapy apps and generic wellness tools. It provides an accessible, emotionally intelligent space for users to process their thoughts, track mood patterns, and practice mindfulness—all while keeping data secure and private.
+
+---
 
 ## 🚀 Key Features
 
-- **🔒 Dual Encryption:** Journal entries are encrypted on-device before transmission. The server re-encrypts them at rest.
-- **🤖 Resilience AI:** Prioritizes Google Gemini for chat but automatically fails over to Groq (Llama 3) if rate limits are hit.
-- **📱 Offline-First:** Fully functional journaling and history viewing without internet access.
-- **⚡ Optimistic UI:** Instant feedback for chat and journaling interactions.
+- **🔒 Privacy First:** End-to-end encryption for sensitive journal entries. Data stays on your device or is encrypted at rest.
+- **🧠 AI Companion:** empathetic, context-aware chat support powered by Google Gemini, designed to listen and support (not diagnose).
+- **📝 Smart Journaling:** Real-time sentiment analysis generates dynamic prompts to help you dive deeper into your feelings.
+- **📊 Mood Analytics:** Visualize emotional trends over 7, 30, and 90 days to identify triggers and patterns.
+- **🌬️ Guided Mindfulness:** Interactive breathing exercises (Box Breathing, 4-7-8) with haptic feedback for immediate grounding.
+- **📱 Offline Capable:** robust offline-first architecture ensuring support is available even without an internet connection.
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Mobile:** React Native (Expo SDK 52), TypeScript, Zustand, EncryptedStorage
-- **Backend:** Node.js, Express, TypeScript
-- **Database:** MongoDB Atlas (Mongoose ODM)
-- **AI:** Google Gemini Pro + Groq (Llama 3 Fallback)
-- **Auth:** Firebase Authentication + Custom JWT Session Management
+### Mobile (Frontend)
 
-## 🏁 Getting Started
+- **Framework:** React Native (via Expo SDK 50+)
+- **Language:** TypeScript
+- **State Management:** Zustand
+- **Navigation:** Expo Router (File-based routing)
+- **Storage:** `react-native-encrypted-storage` & `AsyncStorage`
+
+### API (Backend)
+
+- **Runtime:** Node.js + Express.js
+- **Language:** TypeScript
+- **Database:** MongoDB Atlas (Mongoose ODM)
+- **Authentication:** Firebase Auth (JWT verification)
+- **AI Integration:** Google Gemini API (with Groq fallback)
+- **Security:** AES-256 Encryption, Helmet, Rate Limiting
+
+### DevOps & Infrastructure
+
+- **CI/CD:** GitHub Actions
+- **Hosting:** Render (Backend), Expo EAS (Mobile builds)
+- **Monitoring:** Sentry
+
+---
+
+## 📂 Project Structure
+
+```text
+mindmate-ai/
+├── mobile/                 # React Native Expo application
+│   ├── app/                # Expo Router screens
+│   ├── components/         # Reusable UI components
+│   └── services/           # API & Encryption logic
+├── backend/                # Node.js Express API
+│   ├── src/
+│   │   ├── controllers/    # Request handlers
+│   │   ├── models/         # Mongoose schemas
+│   │   └── services/       # Business logic (AI, Sync)
+├── docs/                   # Documentation & Guides
+└── .github/                # CI/CD Workflows
+```
+
+---
+
+## ⚡ Quick Start
+
+For detailed setup instructions, including environment variables and database configuration, please refer to the **[Development Guide](https://www.google.com/search?q=docs/DEVELOPMENT.md)**.
 
 ### Prerequisites
 
-- Node.js 20+
-- MongoDB Atlas Account
-- Firebase Project
-- Gemini & Groq API Keys
+- Node.js 18+
+- npm 9+
+- Expo Go app (installed on your physical device) or Android/iOS Simulator
 
 ### Installation
 
 1.  **Clone the repository**
 
     ```bash
-    git clone [https://github.com/yourusername/mindmate-ai.git](https://github.com/yourusername/mindmate-ai.git)
+    git clone https://github.com/yourusername/mindmate-ai.git
     cd mindmate-ai
     ```
 
-2.  **Backend Setup**
+2.  **Install dependencies**
 
     ```bash
-    cd backend
-    npm install
-    cp .env.example .env
-    # Fill in your API keys in .env
-    npm run dev
+    # Install backend dependencies
+    cd backend && npm install
+
+    # Install mobile dependencies
+    cd ../mobile && npm install
     ```
 
-3.  **Mobile Setup**
+3.  **Run locally**
+
     ```bash
-    cd mobile
-    npm install
+    # Start Backend (Port 3000)
+    cd backend
+    npm run dev
+
+    # Start Mobile (Metro Bundler)
+    cd ../mobile
     npx expo start
     ```
 
-## 🔒 Security Architecture
+---
 
-MindMate uses a unique encryption model to protect mental health data:
+## 📚 Documentation
 
-1.  **Layer 1 (Device):** Payload encrypted with a locally generated Master Key.
-2.  **Layer 2 (Server):** Encrypted payload is wrapped in a second encryption layer using the Server Key.
+- **[Architecture Decisions](https://www.google.com/search?q=docs/ARCHITECTURE.md):** Deep dive into system design, encryption strategy, and data flow.
+- **[API Reference](https://www.google.com/search?q=docs/API.md):** Complete documentation of backend endpoints and contracts.
+- **[Deployment Guide](https://www.google.com/search?q=docs/DEPLOYMENT.md):** Instructions for deploying to Render and App Stores.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see the `CONTRIBUTING.md` file for guidelines on how to submit pull requests, report issues, and request features.
 
 ## 📄 License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
