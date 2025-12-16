@@ -10,6 +10,7 @@ export interface IJournal extends Document {
   moodIntensity?: number;
   tags: string[];
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const JournalSchema = new Schema(
