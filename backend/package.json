@@ -1,17 +1,21 @@
 {
-  "name": "backend",
+  "name": "mindmate-api",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "rimraf dist && tsc",
-    "start": "node dist/server.js",
-    "lint": "eslint src/**/*.ts"
+  "description": "Backend API for MindMate AI - Privacy-first mental wellness companion",
+  "main": "dist/server.js",
+  "engines": {
+    "node": ">=18.0.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": [
+    "mental-health",
+    "ai",
+    "privacy",
+    "express",
+    "mongoose",
+    "typescript"
+  ],
+  "author": "Avishka Gihan",
+  "license": "MIT",
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "cors": "^2.8.5",
