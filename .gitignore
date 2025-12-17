@@ -44,7 +44,7 @@ mobile/android/.gradle/
 mobile/android/local.properties
 
 # Backend specific
-backend/.env*
+backend/.env
 backend/dist/
 backend/build/
 backend/logs/
@@ -121,6 +121,7 @@ mobile/android/
 # IDEs & Editors
 .idea/
 .vscode/
+
 *.swp
 *.swo
 *.sublime-project
