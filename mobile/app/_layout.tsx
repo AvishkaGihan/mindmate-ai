@@ -51,7 +51,7 @@ export default function RootLayout() {
 
     if (isAuthenticated && inAuthGroup) {
       // If user is logged in and trying to access login/signup, send to home
-      router.replace("/(tabs)");
+      router.replace("/");
     } else if (!isAuthenticated && !inAuthGroup) {
       // If user is not logged in and not in the auth group, send to login
       router.replace("/(auth)/login");

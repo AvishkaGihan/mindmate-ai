@@ -147,7 +147,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => router.push("/(tabs)/breathe")}
+          onPress={() => router.push("/breathe" as any)}
           activeOpacity={0.8}
         >
           <View style={[styles.iconCircle, { backgroundColor: "#E8F5E9" }]}>
@@ -160,7 +160,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => router.push("/(tabs)/chat")}
+          onPress={() => router.push("/chat" as any)}
           activeOpacity={0.8}
         >
           <View style={[styles.iconCircle, { backgroundColor: "#F3E5F5" }]}>
