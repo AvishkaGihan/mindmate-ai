@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import mongoose from "mongoose";
 import User from "../models/User";
 import { validate, moodSchema } from "../utils/validators";
 import { AppError } from "../utils/AppError";
@@ -69,13 +70,17 @@ export class MoodController {
       const { startDate, endDate } = req.query;
 
       // Default to last 30 days if no range provided
-      const end = endDate ? new Date(endDate as string) : new Date();
-      const start = startDate ? new Date(startDate as string) : new Date();
-      if (!startDate) start.setDate(end.getDate() - 30);
+      const now = new Date();
+      const end = endDate
+        ? new Date(endDate as string)
+        : new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      const start = startDate
+        ? new Date(startDate as string)
+        : new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
 
       // Aggregation Pipeline to filter embedded array
       const result = await User.aggregate([
-        { $match: { _id: req.user!.userId } }, // Match User
+        { $match: { _id: new mongoose.Types.ObjectId(req.user!.userId) } }, // Match User
         {
           $project: {
             moods: {
@@ -129,7 +134,7 @@ export class MoodController {
       else threshold.setDate(now.getDate() - 7); // Default 7d
 
       const stats = await User.aggregate([
-        { $match: { _id: req.user!.userId } },
+        { $match: { _id: new mongoose.Types.ObjectId(req.user!.userId) } },
         { $unwind: "$moods" },
         { $match: { "moods.timestamp": { $gte: threshold } } },
         {
