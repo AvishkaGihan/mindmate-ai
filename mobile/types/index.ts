@@ -87,6 +87,7 @@ export interface JournalState {
   journals: JournalEntry[];
   isLoading: boolean;
   offlineQueue: SyncOperation[];
+  currentDraft: string;
   fetchJournals: () => Promise<void>;
   addJournal: (
     entry: Omit<JournalEntry, "_id" | "userId" | "createdAt" | "updatedAt">
@@ -94,6 +95,8 @@ export interface JournalState {
   updateJournal: (id: string, updates: Partial<JournalEntry>) => Promise<void>;
   deleteJournal: (id: string) => Promise<void>;
   processQueue: () => Promise<void>;
+  saveDraft: (text: string) => void;
+  hydrate: () => Promise<void>;
 }
 
 export interface MoodState {
