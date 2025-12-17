@@ -55,19 +55,18 @@ mongoose.connection.on("error", (err) => {
 // Graceful Shutdown
 // ============================================================================
 
-const handleGracefulShutdown = async () => {
+const disconnectDatabase = async (): Promise<void> => {
   try {
     await mongoose.connection.close();
     console.info("MongoDB connection closed through app termination");
-    process.exit(0);
   } catch (err) {
     console.error("Error during MongoDB disconnect", err);
-    process.exit(1);
+    throw err;
   }
 };
 
 // Listen for termination signals (e.g., Ctrl+C or Docker stop)
-process.on("SIGINT", handleGracefulShutdown);
-process.on("SIGTERM", handleGracefulShutdown);
+process.on("SIGINT", disconnectDatabase);
+process.on("SIGTERM", disconnectDatabase);
 
-export default connectDatabase;
+export { connectDatabase, disconnectDatabase };
