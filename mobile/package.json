@@ -46,7 +46,8 @@
     "react-native-web": "~0.21.0",
     "react-native-worklets": "0.5.1",
     "tailwind-merge": "^3.4.0",
-    "zustand": "^5.0.9"
+    "zustand": "^5.0.9",
+    "expo-local-authentication": "~17.0.8"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
