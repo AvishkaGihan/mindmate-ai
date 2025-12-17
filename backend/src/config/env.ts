@@ -60,6 +60,15 @@ const envSchema = z.object({
   LOG_LEVEL: z
     .enum(["error", "warn", "info", "http", "verbose", "debug", "silly"])
     .default("info"),
+
+  // CORS Configuration
+  CORS_ORIGIN: z
+    .string()
+    .transform((val) => {
+      // Support comma-separated origins for multiple domains
+      return val.split(",").map((origin) => origin.trim());
+    })
+    .default(() => ["http://localhost:3000"]),
 });
 
 // Validate process.env
@@ -105,5 +114,8 @@ export const config = {
   },
   logging: {
     level: env.LOG_LEVEL,
+  },
+  cors: {
+    origin: env.CORS_ORIGIN,
   },
 } as const;
