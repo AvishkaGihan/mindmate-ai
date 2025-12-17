@@ -147,7 +147,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={styles.actionButton}
-          onPress={() => router.push("/breathe" as any)}
+          onPress={() => router.push("/breathe")}
           activeOpacity={0.8}
         >
           <View style={[styles.iconCircle, { backgroundColor: "#E8F5E9" }]}>
