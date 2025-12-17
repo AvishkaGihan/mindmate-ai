@@ -115,7 +115,6 @@ export class GeminiService {
           generationConfig: {
             temperature: 0.7,
             maxOutputTokens: 250,
-            thinkingConfig: { budgetTokens: 0 }, // Disable thinking for lower latency
           },
         }),
       }
@@ -154,7 +153,6 @@ export class GeminiService {
           generationConfig: {
             temperature: 0.8,
             maxOutputTokens: 100,
-            thinkingConfig: { budgetTokens: 0 }, // Disable thinking for lower latency
           },
         }),
       }
