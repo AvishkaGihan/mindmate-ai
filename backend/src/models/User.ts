@@ -116,23 +116,14 @@ const userSchema = new Schema<any, UserModel, IUserMethods>(
 // ============================================================================
 
 // Hash password before saving
-userSchema.pre<any>("save", function (next: any) {
-  const doc: any = this;
+userSchema.pre("save", async function () {
   // Only hash the password if it has been modified (or is new)
-  if (!doc.isModified("password")) return next();
+  if (!this.isModified("password")) return;
 
   // If password exists (it might be missing for OAuth users), hash it
-  if (doc.password) {
-    bcrypt
-      .genSalt(10)
-      .then((salt: string) => bcrypt.hash(doc.password, salt))
-      .then((hash: string) => {
-        doc.password = hash;
-        next();
-      })
-      .catch((error: Error) => next(error));
-  } else {
-    next();
+  if (this.password) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password as string, salt);
   }
 });
 
