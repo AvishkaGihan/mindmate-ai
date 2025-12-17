@@ -80,11 +80,7 @@ export class GeminiService {
    * Generates a daily affirmation based on recent mood context.
    */
   public async generateAffirmation(moodContext: string): Promise<string> {
-    const prompt = `
-      Based on the user's recent mood (${moodContext}), generate a short, powerful, positive affirmation.
-      It should be personal, uplifting, and under 20 words.
-      Return ONLY the affirmation text.
-    `;
+    const prompt = `Based on this mood context: "${moodContext}", generate ONE complete, short, powerful positive affirmation. It must be under 20 words and end with a period. Return ONLY the affirmation text, nothing else.`;
 
     try {
       return await this.callGeminiSinglePrompt(prompt);
@@ -152,7 +148,7 @@ export class GeminiService {
           contents: [{ role: "user", parts: [{ text: prompt }] }],
           generationConfig: {
             temperature: 0.8,
-            maxOutputTokens: 100,
+            maxOutputTokens: 150,
           },
         }),
       }
@@ -161,7 +157,13 @@ export class GeminiService {
     if (!response.ok) throw new Error("Gemini Single Prompt Failed");
 
     const data = (await response.json()) as any;
-    return data.candidates[0].content.parts[0].text.trim();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+
+    if (!text) {
+      throw new Error("Gemini returned empty response");
+    }
+
+    return text;
   }
 
   // ============================================================================
