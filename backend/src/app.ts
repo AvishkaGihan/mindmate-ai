@@ -58,7 +58,7 @@ app.get("/health", (req: Request, res: Response) => {
 app.use("/api", routes);
 
 // 404 Handler for undefined routes
-app.all("*", (req: Request, res: Response) => {
+app.use((req: Request, res: Response) => {
   res.status(404).json({
     status: "fail",
     message: `Can't find ${req.originalUrl} on this server!`,
