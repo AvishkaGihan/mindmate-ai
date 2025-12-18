@@ -25,11 +25,15 @@ export default function RootLayout() {
 
   // 1. Load Fonts
   const [fontsLoaded] = useFonts({
-    // Using standard system fonts for MVP reliability, but setting up the hook structure
-    // If you add actual font files to assets/fonts, uncomment and map them here:
-    // 'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
-    // 'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
-    // 'PlayfairDisplay-Bold': require('../assets/fonts/PlayfairDisplay-Bold.ttf'),
+    // Primary Fonts (Inter)
+    "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
+    "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
+    "Inter-SemiBold": require("../assets/fonts/Inter-SemiBold.ttf"),
+    "Inter-Bold": require("../assets/fonts/Inter-Bold.ttf"),
+
+    // Display Fonts (Playfair Display)
+    "PlayfairDisplay-Regular": require("../assets/fonts/PlayfairDisplay-Regular.ttf"),
+    "PlayfairDisplay-Bold": require("../assets/fonts/PlayfairDisplay-Bold.ttf"),
   });
 
   // 2. Auth State
