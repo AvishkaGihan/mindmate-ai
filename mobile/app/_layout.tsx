@@ -37,12 +37,14 @@ export default function RootLayout() {
   });
 
   // 2. Auth State
-  const { isAuthenticated, isLoading, hydrate } = useAuthStore();
+  const { isAuthenticated, isLoading, hydrate, initializeAuthFromFirebase } =
+    useAuthStore();
 
   // Initialize Auth on mount
   useEffect(() => {
     hydrate();
-  }, [hydrate]);
+    initializeAuthFromFirebase();
+  }, [hydrate, initializeAuthFromFirebase]);
 
   // 3. Navigation Protection Logic
   useEffect(() => {

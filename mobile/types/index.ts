@@ -44,14 +44,6 @@ export interface JournalEntry {
   isSynced?: boolean; // Frontend-only flag for offline usage
 }
 
-export interface Affirmation {
-  _id: string;
-  text: string;
-  theme?: string;
-  createdAt: string;
-  isSaved?: boolean; // Frontend-only flag
-}
-
 export interface ChatMessage {
   id: string;
   role: "user" | "model";
@@ -70,8 +62,12 @@ export interface AuthState {
   refreshToken: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (user: User, accessToken: string, refreshToken: string) => void;
-  logout: () => void;
+  // Actions
+  hydrate: () => Promise<void>;
+  logout: () => Promise<void>;
+  loginWithFirebaseToken: (idToken: string) => Promise<void>;
+  loginWithBiometric: () => Promise<void>;
+  initializeAuthFromFirebase: () => Promise<void>;
   updateUser: (updates: Partial<User>) => void;
 }
 
@@ -110,4 +106,13 @@ export interface MoodState {
   logMood: (mood: Mood, intensity: number, note?: string) => Promise<void>;
   fetchHistory: (range?: string) => Promise<void>;
   fetchStats: (range?: string) => Promise<void>;
+}
+
+export interface ChatState {
+  messages: ChatMessage[];
+  isLoading: boolean;
+  addMessage: (message: ChatMessage) => void;
+  sendMessage: (content: string) => Promise<void>;
+  clearHistory: () => Promise<void>;
+  hydrate: () => Promise<void>;
 }

@@ -43,6 +43,7 @@ api.interceptors.request.use(
 /**
  * Response Interceptor
  * Handles global API errors, specifically 401 Unauthorized.
+ * Maps Firebase-specific errors to user-friendly messages.
  */
 api.interceptors.response.use(
   (response) => response,

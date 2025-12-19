@@ -1,25 +1,25 @@
 import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ScreenContainer } from "../../components/common/ScreenContainer";
 import { Typography } from "../../components/common/Typography";
 import { Input } from "../../components/common/Input";
 import { Button } from "../../components/common/Button";
 import { useAuthStore } from "../../stores/authStore";
-import api from "../../services/api";
+import { auth } from "../../services/firebase";
 import Colors from "../../constants/Colors";
 import { Spacing } from "../../constants/Spacing";
 
 /**
  * Signup Screen
- * Registration for new users.
- * Focuses on trust-building (Privacy Promise) and friction reduction.
+ * Registration for new users via Firebase Authentication.
+ * Creates Firebase user account, then exchanges ID token for backend JWT.
  */
 
 export default function SignupScreen() {
-  const { login } = useAuthStore();
+  const { loginWithFirebaseToken } = useAuthStore();
 
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,7 +28,7 @@ export default function SignupScreen() {
   const [error, setError] = useState<string | null>(null);
 
   const validateForm = () => {
-    if (!name || !email || !password || !confirmPassword) {
+    if (!email || !password || !confirmPassword) {
       setError("Please fill in all fields.");
       return false;
     }
@@ -61,29 +61,39 @@ export default function SignupScreen() {
     setIsLoading(true);
 
     try {
-      // 1. Register User
-      // Expected API payload: { name, email, password }
-      const response = await api.post("/auth/register", {
-        name,
+      // 1. Create Firebase User Account
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
         email,
-        password,
-      });
+        password
+      );
 
-      const { user, token, refreshToken } = response.data.data;
+      // 2. Get Firebase ID Token
+      const idToken = await userCredential.user.getIdToken();
 
-      // 2. Auto-Login (Update Store)
-      // This will trigger the auth protection in _layout to redirect to /(tabs)
-      await login(user, token, refreshToken);
+      // 3. Exchange ID Token for Backend JWT
+      // This endpoint also performs JIT user provisioning with the user's name and email
+      await loginWithFirebaseToken(idToken);
+
+      // Navigation happens automatically when authStore.isAuthenticated is set to true
     } catch (err: any) {
       console.error("Signup failed", err);
 
-      if (err.response?.status === 409) {
+      // Map Firebase-specific errors to user-friendly messages
+      if (err.code === "auth/invalid-email") {
+        setError("Please enter a valid email address.");
+      } else if (err.code === "auth/weak-password") {
+        setError("Password must be at least 6 characters long.");
+      } else if (err.code === "auth/email-already-in-use") {
         setError("This email is already registered. Please login instead.");
-      } else {
+      } else if (err.code === "auth/operation-not-allowed") {
         setError(
-          err.response?.data?.message ||
-            "Failed to create account. Please try again."
+          "Account creation is currently disabled. Please try again later."
         );
+      } else if (err.code === "auth/network-request-failed") {
+        setError("Network error. Please check your internet connection.");
+      } else {
+        setError(err.message || "Failed to create account. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -102,17 +112,6 @@ export default function SignupScreen() {
       </View>
 
       <View style={styles.form}>
-        <Input
-          label="Name"
-          placeholder="What should we call you?"
-          value={name}
-          onChangeText={(text) => {
-            setName(text);
-            setError(null);
-          }}
-          autoCapitalize="words"
-        />
-
         <Input
           label="Email"
           placeholder="name@example.com"

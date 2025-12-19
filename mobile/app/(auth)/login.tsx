@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
 import * as LocalAuthentication from "expo-local-authentication";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { ScreenContainer } from "../../components/common/ScreenContainer";
 import { Typography } from "../../components/common/Typography";
 import { Input } from "../../components/common/Input";
 import { Button } from "../../components/common/Button";
 import { useAuthStore } from "../../stores/authStore";
-import api from "../../services/api";
+import { auth } from "../../services/firebase";
 import Colors from "../../constants/Colors";
 import { Spacing } from "../../constants/Spacing";
 
 /**
  * Login Screen
  * Primary entry point for existing users.
- * Supports Email/Password authentication and Biometric shortcuts.
+ * Supports Email/Password authentication via Firebase and Biometric shortcuts.
  */
 
 export default function LoginScreen() {
-  const { login } = useAuthStore();
+  const { loginWithFirebaseToken, loginWithBiometric } = useAuthStore();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,18 +55,37 @@ export default function LoginScreen() {
     setError(null);
 
     try {
-      // 1. Call API
-      // Note: In a real app, you'd handle the response structure strictly.
-      // Assuming API returns { data: { user, token, refreshToken } }
-      const response = await api.post("/auth/login", { email, password });
-      const { user, token, refreshToken } = response.data.data;
+      // 1. Sign in with Firebase
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-      // 2. Update Store (this will trigger navigation in _layout)
-      await login(user, token, refreshToken);
+      // 2. Get Firebase ID Token
+      const idToken = await userCredential.user.getIdToken();
+
+      // 3. Exchange ID Token for Backend JWT
+      await loginWithFirebaseToken(idToken);
+
+      // Navigation happens automatically when authStore.isAuthenticated is set to true
     } catch (err: any) {
       console.error("Login failed", err);
-      const msg = err.response?.data?.message || "Invalid email or password.";
-      setError(msg);
+
+      // Map Firebase-specific errors to user-friendly messages
+      if (
+        err.code === "auth/user-not-found" ||
+        err.code === "auth/wrong-password" ||
+        err.code === "auth/invalid-email"
+      ) {
+        setError("Invalid email or password.");
+      } else if (err.code === "auth/too-many-requests") {
+        setError("Too many failed attempts. Please try again later.");
+      } else if (err.code === "auth/network-request-failed") {
+        setError("Network error. Check your connection.");
+      } else {
+        setError(err.message || "Login failed. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -79,18 +99,21 @@ export default function LoginScreen() {
       });
 
       if (result.success) {
-        // In a real implementation:
-        // 1. Retrieve the encrypted refresh token from SecureStorage
-        // 2. Call an API endpoint to exchange refresh token for access token
-        // 3. Login the user
-        // For MVP without the full secure storage keychain logic connected here yet:
-        Alert.alert(
-          "Biometric Auth Success",
-          "Feature would auto-login here in production."
-        );
+        setIsLoading(true);
+        try {
+          await loginWithBiometric();
+          // Navigation happens automatically when authStore.isAuthenticated is set to true
+        } catch (err: any) {
+          const msg =
+            err.message || "Biometric login failed. Please try again.";
+          setError(msg);
+        } finally {
+          setIsLoading(false);
+        }
       }
     } catch (e) {
       console.log("Biometric auth failed", e);
+      setError("Biometric authentication is not available.");
     }
   };
 

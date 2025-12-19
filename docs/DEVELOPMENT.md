@@ -83,15 +83,53 @@ cp mobile/.env.example mobile/.env
 **Required Variables (`mobile/.env`):**
 
 ```ini
-# Point to your local backend IP address (not localhost, as emulators differ)
-# For Android Emulator: http://10.0.2.2:3000/api/v1
-# For Physical Device: http://<YOUR_LAN_IP>:3000/api/v1
-EXPO_PUBLIC_API_URL=http://localhost:3000/api/v1
+# Backend API URL
+# For Android Emulator: http://10.0.2.2:3000/api
+# For Physical Device: http://<YOUR_LAN_IP>:3000/api
+EXPO_PUBLIC_API_URL=http://localhost:3000/api
+
+# Firebase Configuration (obtain from Firebase Console)
+EXPO_PUBLIC_FIREBASE_API_KEY=your-api-key
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+EXPO_PUBLIC_FIREBASE_APP_ID=your-app-id
 ```
+
+### 3.3. Firebase Setup
+
+Firebase authentication must be enabled for the mobile app:
+
+1. **Create a Firebase Project:**
+
+   - Go to [Firebase Console](https://console.firebase.google.com/)
+   - Create a new project or use an existing one
+   - Enable Firestore Database (for future features)
+
+2. **Enable Email/Password Authentication:**
+
+   - Go to **Authentication** → **Sign-in method**
+   - Enable **Email/Password**
+   - (Optional) Enable **Google Sign-In** for social login
+
+3. **Get Firebase Config:**
+
+   - Go to **Project Settings** → **Your Apps**
+   - Select or create a new web app
+   - Copy the Firebase config object
+   - Add the values to `mobile/.env` with `EXPO_PUBLIC_FIREBASE_` prefix
+
+4. **Backend Firebase Admin SDK:**
+   - Go to **Project Settings** → **Service Accounts**
+   - Click **Generate New Private Key**
+   - Download the JSON file
+   - Add `FIREBASE_PROJECT_ID` to `backend/.env`
+   - (Backend will automatically use Application Default Credentials or read from service account)
 
 ---
 
-## 4\. Running the Application
+## 4. Running the Application
 
 ### 4.1. Start the Backend
 
@@ -118,7 +156,39 @@ npx expo start
 - **Press 'a':** Launch Android Emulator.
 - **Press 'i':** Launch iOS Simulator (macOS only).
 
----
+### 4.3. Testing Authentication Flow
+
+**Signup:**
+
+1. Launch the app
+2. Tap "Sign Up"
+3. Enter name, email, and password (min 8 characters)
+4. Firebase creates the account
+5. App exchanges Firebase ID token for backend JWT
+6. User is automatically logged in and redirected to home screen
+
+**Login:**
+
+1. Tap "Sign In"
+2. Enter email and password
+3. Firebase authenticates the user
+4. App exchanges Firebase ID token for backend JWT
+5. User is logged in and redirected to home screen
+
+**Biometric Login (requires physical device or configured emulator):**
+
+1. After first login, Face ID / Touch ID option appears
+2. Tap "Use FaceID / TouchID"
+3. Authenticate with biometric
+4. App uses stored refresh token to get new access token
+5. User is logged in without entering password
+
+**Logout:**
+
+1. Tap settings/profile
+2. Tap "Logout"
+3. User is redirected to login screen
+4. All tokens are cleared from encrypted storage
 
 ## 5\. Testing & Quality
 
